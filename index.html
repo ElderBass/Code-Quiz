@@ -9,7 +9,7 @@
 
 <body>
     <header>
-        <h1 id="high-score">High Score: 0</h1>
+        <h1 id="high-score"><a href='highscores.html'>High Scores</a></h1>
         <h1 id="timer">Time: 60</h1>
     </header>
     <!--Let's make quiz about TV shows! Arrested, LOST, Sunny, etc!-->
@@ -18,36 +18,33 @@
     <div class='container' id='quizContainer'>
         <div id='introText' class='container'>
             <h2>Test Your TV Knowledge!</h2>
-            <p>Race the clock to answer questions correctly! An incorreect answer subtracts time from the lock. Shoot for the high score by answering quickly and correctly!</p>
+            <p>Race the clock to answer questions correctly! An incorreect answer subtracts time from the clock. Shoot for the high score by answering quickly and correctly!</p>
         </div>
         <div id='questionContainer' class='hide'>
             <div id='questions'>Question</div>
             <div id='answerButtons' class='buttonList'>
-                <button class='btn' id="answerButtons">Answer1</button>
-                <button class='btn' id="answerButtons">Answer2</button>
-                <button class='btn' id="answerButtons">Answer3</button>
-                <button class='btn' id="answerButtons">Answer4</button>
+                <!--Answer Buttons will be appended to this div in javascript-->
             </div>
         </div>
         <div class='controls'>
             <button id='startButton' class='start-btn'>Start</button>
-            <button id='nextButton' class='next-btn btn hide'>Next</button>
-            <button id='resetQuiz' class='hide btn'>Restart Quiz</button>
+            <!--<button id='nextButton' class='next-btn hide'>Next</button> -->
         </div>
-
-
-
-
-
-            <!--
-                <h2>Test your TV knowledge!</h2>
+        <div class='container hide' id='gameOverScreen'>
+            <h2>Game Over!</h2>
+            <div id='finalScoreContainer'>
+                <form action="highscores.html" class='hide' id='scoresForm'> <!--can I instead set this action = setLocalStorage?-->
+                    <label for='inputInitials'>Enter Initials: </label>
+                    <input placeholder='Initials' id='inputInitials' type='text'>
+                    <button id='submitScoreButton' type='submit'>Submit Score</button> <!--on click > highscores.html-->
+                </form>
+            </div>
+        <div class='container' id='answerMessage'>
+            <h3 class='hide' id='correct'>LUCKY GUESS</h3>
+            <h3 class='hide' id='incorrect'>SUCKS TO SUCK</h3>
         </div>
-        <div class='container'>
-            <p>Race the clock and flex your TV prowess! The faster you answer the questions, the higher your score will be! Can you get the high score??</p>
+             
         </div>
-        <div class='container' id='buttonContainer'>
-            <button type="button" id='startButton'>Start Quiz!</button>
-        </div> -->
         
     </div>
 
