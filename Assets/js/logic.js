@@ -79,7 +79,7 @@ const questions = [
             {text:"Seinfeld"},
             {text:"Seinfeld"},
             {text:"Seinfeld"},  ],
-        correct:"Seinfled"
+        correct:"Seinfeld"
     },
 
 ]
@@ -91,7 +91,7 @@ var currentQuestionIndex;
 var timer = document.getElementById("timer");
 
 var startQuiz = document.getElementById("startButton");
-//var nextQuestion = document.getElementById('nextButton')
+var nextButton = document.getElementById('nextButton');
 var restartQuiz = document.getElementById("restartQuiz");
 
 const questionContainerElement = document.getElementById('questionContainer');
@@ -105,23 +105,33 @@ var answerButtons = document.getElementById('answerButtons');
 var gameOverScreen = document.getElementById('gameOverScreen');
 var scoresForm = document.getElementById('scoresForm');
 
-var timeRemaining = 0;
 var userScore = 0; //not sure I need this
-
+var currentQuestionIndex;
 
 startQuiz.addEventListener('click', startGame);
+nextButton.addEventListener('click', function(){
+    currentQuestionIndex++;
+    nextQuestion();
+})
+
+var timeRemaining = 30;
+
+
+
+
 //startQuiz.addEventListener('click', cycleQuestions); just some trial and error. Mostly error
 
 var restartQuiz = document.getElementById("restartQuiz")
 restartQuiz.addEventListener('click', function(){
     restartQuiz.setAttribute('src', 'index.html');
 })
-    
+
+var stopTimer = false;
 
 function startGame (e){
     //just in case
     e.preventDefault();
-    
+    currentQuestionIndex = 0;
 
     /*Add the class 'hide' to both our intro text and start button to make room for
     the actual question and answer list. */
@@ -130,40 +140,42 @@ function startGame (e){
     
     /*Remove 'hide' class from the question/answers to officially start the quiz */
     questionContainerElement.classList.remove('hide');
-    
-    timeRemaining = 30;
+
     var timerId = setInterval(function(){
         timeRemaining--;
         timer.textContent = "Time: "+timeRemaining;
-        if (timeRemaining === 0) {
+        if (timeRemaining === 0 || stopTimer) {
             console.log('gameOver');
             questionContainerElement.classList.add('hide');
-            
+            nextButton.classList.add('hide');
             gameOverScreen.classList.remove('hide');
             scoresForm.classList.remove('hide');
             var finalScore = document.getElementById('finalScoreContainer');
             var scoreDisplay = document.createElement('h3');
-            scoreDisplay.textContent = 'Your Score: 0';
+            
             finalScore.appendChild(scoreDisplay);
             clearInterval(timerId);
+            if (!stopTimer ){
+                scoreDisplay.textContent = 'Your Score: 0';
+            }
             
-            //then remove hide from the Game Over Screen
-                //game over screen displays high score, has input for initials and submit button
-            //set userScore = to  Time Remaining
-            //log userScore to local storage
         }
         else if (timeRemaining < 0) {
             console.log('gameOver');
             questionContainerElement.classList.add('hide');
-            
+            nextButton.classList.add('hide');
             gameOverScreen.classList.remove('hide');
             scoresForm.classList.remove('hide');
             clearInterval(timerId);
             timeRemaining = 0;
+            var finalScore = document.getElementById('finalScoreContainer');
+            var scoreDisplay = document.createElement('h3');
+            finalScore.appendChild(scoreDisplay);
+            scoreDisplay.textContent = 'Your Score: 0';
         }
     }, 1000);
-    
-    cycleQuestions();
+        
+    nextQuestion();
     
 }
 
@@ -172,17 +184,18 @@ The empty buttons appear because we have them written in our html, with the id '
 in our 'showQuestion' function, we create ANOTHER set of buttons and append those to the id 'answerButtons',
 which normally gives us two sets of buttons, thus we must remove that first, empty set of buttons with this fxn. */
 function resetQuizState () {
-    
+    nextButton.classList.add('hide');
     while (answerButtons.firstChild) {
         answerButtons.removeChild(answerButtons.firstChild);
     }
 } 
 
+/*
 function cycleQuestions(){
     
     var index = 0;
     
-    resetQuizState();    
+    //resetQuizState();    
     if (index < questions.length) {
         questionsElement.textContent = questions[index].question;
        
@@ -191,109 +204,112 @@ function cycleQuestions(){
             button.innerText = questions[index].answers[i].text;
             button.classList.add('btn');
             button.setAttribute('id', 'answerButtons');
-            answerButtons.appendChild(button);
-            button.addEventListener('click', selectAnswer);
+            
             if (questions[index].answers[i].text === questions[index].correct) {
                 button.setAttribute('value', 'correct')
             }
+            button.addEventListener('click', selectAnswer);
+            answerButtons.appendChild(button);
+        } 
+    }
+    index+=1;        
+    
+    } */
+
+function nextQuestion(){
+        resetQuizState();
+        cycleQuestions(questions[currentQuestionIndex]);
+    }
+
+function cycleQuestions(q){
+    
+    if (currentQuestionIndex > 5) {
+        //clearInterval(timerId);
+        questionContainerElement.classList.add('hide');
+        nextButton.classList.add('hide');
+        gameOverScreen.classList.remove('hide');
+        scoresForm.classList.remove('hide');
+        var finalScore = document.getElementById('finalScoreContainer');
+        var scoreDisplay = document.createElement('h3');
+        scoreDisplay.textContent = 'Your Score: '+timeRemaining;
+        finalScore.appendChild(scoreDisplay);
+        stopTimer = true;
+        
+    }
+    else {
+
+    questionsElement.textContent = q.question;
+    for (i = 0; i < q.answers.length; i++) {
+        var button = document.createElement('button');
+        button.innerText = q.answers[i].text;
+        button.classList.add('btn');
+        button.setAttribute('id', 'answerButtons');
+        
+        if (q.answers[i].text === q.correct) {
+            button.setAttribute('value', 'correct')
         }
+        button.addEventListener('click', selectAnswer);
+        answerButtons.appendChild(button);
+    } 
+}
+    
+    
     }
-    index+=1;    
-    
-    
-    
-    }
+                
+
+
 //for correct or incorrect choices: need
 function selectAnswer(event){ //but how to properly call select answer? 
 
-    answerTime = 1;
     var userChoice = event.target;
     
-        if (userChoice.hasAttribute('value')) {
-            alert('Correct');
-            timeRemaining += 10;
-            resetQuizState();
-            //userChoice.addEventListener('click', resetQuizState);
-            //userChoice.addEventListener('click', cycleQuestions);
-            
-            /*
-            var correctAnswer = setInterval(function(){
-                answerTime--;
-                var correct = document.getElementById('correct');
-                correct.classList.remove('hide');
-                if (answerTime === 0) { //Literally everything disappears when I have this interval stuff included
-                    quizCard.remove(correct);
-                    clearInterval(correctAnswer);
-                }
-            }, 1000)*/
-            
-        }
-        else {
-            
-            alert('incorrect')
-            timeRemaining -= 5;
-            resetQuizState();
-            //userChoice.addEventListener('click', cycleQuestions);
-            /*
-            var incorrectAnswer = setInterval(function(){
-                answerTime--;
-                var incorrect = document.getElementById('incorrect');
-                incorrect.classList.remove('hide');
-                if (answerTime === 0) {
-
-                    clearInterval(incorrectAnswer);
-                }
-
-            }, 1000) */
-            
-            //go to next question after certain time frame
-        }
+    if (userChoice.hasAttribute('value')) {
+        userChoice.textContent ='LUCKY GUESS';
+        userChoice.setAttribute('style', 'background-color: green');
+        timeRemaining += 10;
+        nextButton.classList.remove('hide');
+               
+    }
+    else {
+        timeRemaining -= 5;
+        userChoice.textContent ='LOL WRONG';
+        userChoice.setAttribute('style', 'background-color: red');
+        nextButton.classList.remove('hide');
         
-    cycleQuestions();
+    }
+    
 } 
 
+//setting a variable to the submit score button
 var submitScore = document.getElementById('submitScoreButton');
 
+//adding a click event function to my submit score button
 submitScore.addEventListener('click', function() {
-    //somehow make the key the initials from the input
-    var initials = document.getElementById('inputInitials').value;
+
+    //setting variables for the input form for the initials
+    var initials = document.getElementById('inputInitials').value.trim();
+    //grabbing the 'highScores' from my local storage and covnerting it to a string with JSON.parse
+    var highScores = JSON.parse(localStorage.getItem('highScores'));
+
+    var userScoresObject = {
+        user: initials
+        score: score
+    }
+
+    if (highScores !== null) {
+
+    }
+
+
     localStorage.setItem(initials, 50);
 })
 
 var resetScores = document.getElementById('resetHighScores');
 
 resetScores.addEventListener('click', function(){
-    localStorage.clear();
+    localStorage.clear(); //this isn't working and I have no idea why.
 })
 
-var correctAnswer = setInterval(correct, 2000)
-var incorrectAnswer = setInterval(incorrect, 2000)
-
-function correct() {
-    
-}
-
-function incorrect() {
-    answerTime = 2;
-    answerTime--;
-    var incorrect = document.createElement('h4');
-    incorrect.textContent = 'LUCKY GUESS';
-    incorrect.setAttribute('style', 'color: green; font-size: 25px; text-align: center');
-    quizCard.appendChild(incorrect);
-    if (answerTime === 0) {
-        clearInterval(incorrectAnswer);
-    }
-}
-
-
-    /*
-    
-    setStatusClass(document.body, correct);
-    Array.from(answerButtonsElement.children).forEach(button => {
-        setStatusClass(button, button.dataset.correct);
-    })
-    nextQuestion.classList.remove('hide');
-} */
 
 
 /* POORNIMA PSEUDO CODE
