@@ -96,11 +96,7 @@ var timeRemaining = 30;
 /*adding click function to the start button - startGame function defined below
 special note on this: my console gave me the error 'Cannot read property 'addEventListener' of null', and I have no idea why,
 especially considering the function and start button both work just fine */
-
-window.onload=function(){
-    startQuiz.addEventListener('click', startGame);
-  }
-
+startQuiz.addEventListener('click', startGame);
 
 //adding click function to the next button that adds 1 to the index of the question array, proceeding to the next question
 //this also declares the nextQuestion function, which is described below
@@ -112,12 +108,9 @@ nextButton.addEventListener('click', function(){
 //setting a variable for the 'restart quiz' button that's displayed on the high scores screen
 var restartQuiz = document.getElementById("restartQuiz")
 //adding click function to this restart button that will return the user to the quiz's title page (index.html)
-
-window.onload=function(){
 restartQuiz.addEventListener('click', function(){
     restartQuiz.setAttribute('src', 'index.html');
 })
-}
 //this is used for a fancy trick I'll explain later. setting it to false for now.
 var stopTimer = false;
 
@@ -346,10 +339,9 @@ function displayScores() {
 
 var resetScores = document.getElementById('resetHighScores');
 
-window.onload=function(){
 resetScores.addEventListener('click', function(){
     localStorage.clear(); //this isn't working and I have no idea why.
     window.localStorage.clear();
 })
-}
+
 
