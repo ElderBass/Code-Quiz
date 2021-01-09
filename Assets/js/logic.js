@@ -23,7 +23,7 @@ const questions = [
         correct:"The Simpsons"
     
     },
-       { question: 'Which medical show was written and created by Michael Crichton, author of Jurrassic Park?',
+       { question: 'Which medical show was written and created by Michael Crichton, author of Jurassic Park?',
         answers: [
             {text: "ER"}, 
             {text:"Grey's Anatomy"},
@@ -32,7 +32,7 @@ const questions = [
         correct:"ER"
     },
     {
-        question: 'What blockbuster series absolutely butcher their last season, leaving a heinous, indelible stain on all our souls and TV as whole for all eternity?',
+        question: 'What blockbuster series absolutely butchered their last season, leaving a heinous, indelible stain on all our souls and TV as whole for all eternity?',
         answers: [
             {text:"Don't"}, 
             {text:"Nope"}, 
