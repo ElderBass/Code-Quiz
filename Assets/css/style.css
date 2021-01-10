@@ -74,6 +74,8 @@ h3 {
     padding: 15px;
     border: solid white 2px;
     border-radius: 10px;
+    align-items: center;
+    display: grid;
     }
 
 ol {
@@ -197,6 +199,23 @@ ol {
     margin-left: 15px;
     float: right;
 }
+
+#viewHighScoresBtn {
+    margin-bottom: 20px;
+    width: 80%;
+    margin-left: auto;
+    margin-right:auto;
+    border-radius: 15px;
+    padding: 15px;
+    background-color: purple;
+    color: white;
+    font-size: 36px;
+    
+}
+#viewHighScoresBtn:hover {
+    border: solid 5px black;
+}
+
 /*This class will be added and removed to certain containers and elements as the quiz progresses. */
 .hide {
     display: none;

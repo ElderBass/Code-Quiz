@@ -12,18 +12,19 @@
     </header>
     <!--This container, in theory, will display the high scores stored in local storage from highest to lowest score-->
     <div class='container' id='highScoresContainer'>
-        <div class='container' id='insideHighScores'>
-            <ol id='highScoresList'>
-                <!--High scores from storage will be appended here.--> 
-            </ol>
+        <div>
+            <ol id='highScoresList'></ol>
+            
+            <button id='viewHighScoresBtn'>Click to See High Scores!</button>
         </div>
-        <div class='container'>
-                <!--I put these buttons into their own container for formatting issues. Reset High Scores button will clear the 
-                local storage of high scores data while the restart quiz button will take you back to the index.html quiz page-->   
-                <button id='resetHighScores' class='control-button'>Reset High Scores</button>
-                <form action='index.html'>
-                    <button id='restartQuiz' class='control-button'>Restart Quiz</button>
-                </form>
+
+        <!--I put these buttons into their own container for formatting issues. Reset High Scores button will clear the 
+        local storage of high scores data while the restart quiz button will take you back to the index.html quiz page-->   
+        <div>  
+            <button id='resetHighScores' class='control-button'>Reset High Scores</button>
+            <form action='index.html'>
+                <button id='restartQuiz' class='control-button'>Restart Quiz</button>
+            </form>
             
         </div>
     </div>

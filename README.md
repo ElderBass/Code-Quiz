@@ -20,7 +20,7 @@ There are two html files within this repository. The principle file is index.htm
 
 The highscores.html page simply displays the top scores stored in the local storage. It also has a button for restarting the quiz and another button for resetting the highscores from local storage. 
 
-The Assets folder contains a folder for the style.css file and a separate folder housing the logic.js file. This is the extent of the files in the repository. 
+The Assets folder contains a folder for the style.css file and a separate folder housing the logic.js file. Also within the Assets folder is a folder labeled 'Screenshots' which houses screenshots of the quiz at critical points (e.g. Title Screen, Game Over Screen, etc.). These screenshots are also posted below.
 
 # Links and Pictures
 
@@ -29,12 +29,24 @@ https://elderbass.github.io/Code-Quiz/
 https://github.com/ElderBass/Code-Quiz.git
 
 Title Screen:
+![Quiz Title Screen](./Assets\Screenshots\Quiz-Title.png)
+
 
 Correct Answer:
+![Quiz Correct Answer](./Assets\Screenshots\Quiz-Right.png)
+
 
 Incorrect Answer:
+![Quiz Incorrect Answer](./Assets\Screenshots\Quiz-Wrong.png)
+
 
 Game Over Screen:
+![Quiz at Game Over](./Assets\Screenshots\Quiz-Game-Over.png)
 
-High Scores Page:
 
+High Scores Button:
+![High Scores Page with Button](./Assets\Screenshots\High-Score-Button.png)
+
+
+High Scores Listed:
+![High Scores Page with Scores Listed](Assets\Screenshots\Quiz-Listed-Scores.png)

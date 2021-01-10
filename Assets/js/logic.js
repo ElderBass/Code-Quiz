@@ -84,13 +84,16 @@ var gameOverScreen = document.getElementById('gameOverScreen');
 //grabbing the 'form' element that houses our initials input and submit button - this is hidden initially but revealed when needed
 var scoresForm = document.getElementById('scoresForm');
 
+
+var viewHighScores = document.getElementById('viewHighScoresBtn')
+
 //grabbing the reset high scores button on the high scores page
 var resetScores = document.getElementById('resetHighScores');
 //setting a variable for the 'restart quiz' button that's displayed on the high scores page
 var restartQuiz = document.getElementById("restartQuiz")
 
-//declaring a global variable that will end up being whatever score the user gets on the quiz
-var userScore;
+//setting a variable to the submit score button
+var submitScore = document.getElementById('submitScoreButton');
 
 //this global variable will dictate which index of the questions array will be displayed 
 var currentQuestionIndex;
@@ -98,25 +101,10 @@ var currentQuestionIndex;
 //this global variable will be the initial time on the timer in the upper right hand of the screen and will count down each second
 var timeRemaining = 30;
 
-/*adding click function to the start button - startGame function defined below
-special note on this: my console gave me the error 'Cannot read property 'addEventListener' of null', and I have no idea why,
-especially considering the function and start button both work just fine */
-startQuiz.addEventListener('click', startGame);
-
-//adding click function to the next button that adds 1 to the index of the question array, proceeding to the next question
-//this also declares the nextQuestion function, which is described below
-nextButton.addEventListener('click', function(){
-    currentQuestionIndex++;
-    nextQuestion();
-})
-
-
-//adding click function to this restart button that will return the user to the quiz's title page (index.html)
-restartQuiz.addEventListener('click', function(){
-    location.href='./index.html';
-})
 //this is used for a fancy trick I'll explain later. setting it to false for now.
 var stopTimer = false;
+
+var highScores;
 
 //so. here we go. 
 function startGame (e){
@@ -145,7 +133,7 @@ function startGame (e){
         //the stopTimer will become true if we run out of questions to display, thus signaling the end of the quiz and stopping the timer
         if (timeRemaining <= 0 || stopTimer ) { 
 
-            timeRemaining = 0;
+            //timeRemaining = 0;
             
             questionContainerElement.classList.add('hide'); //we'll hide the div containing the questions to make room for the Game Over screen
             nextButton.classList.add('hide'); //hide the next button
@@ -164,7 +152,7 @@ function startGame (e){
             //if stopTimer is still false, that means we still had questions left when we ran out of time, so our score will be zero
             if (!stopTimer ){ 
                 scoreDisplay.textContent = 'Your Score: 0';
-                timeRemaining = 0;
+                //timeRemaining = 0;
             }
         }
     }, 1000);
@@ -210,13 +198,11 @@ function cycleQuestions(q){
 
         //as explained above, this is now set to true so we can access the game over screen when we run out of questions
         stopTimer = true;
-        //set the global variable to the timeRemaining, which is the user's score that they will submit later
-        
+        return timeRemaining; //so we can grab it later and put it in local storage as our user's score
     }
+
     else { //if we have still have questions remaining...let's grab them!
 
-    //so for our questions div, we're setting, text of that equal to our question's text at the current index position
-    //again, q represents questions[currentQuestionIndex]
     questionsElement.textContent = q.question;
     /*for loop that will create a button for every element in our answers array, set the text content of that button equal to the text at positon
     i of the array of answers within our questions object.*/
@@ -238,7 +224,7 @@ function cycleQuestions(q){
         answerButtons.appendChild(button);
         }       
     }
-    return timeRemaining; //so we can grab it later and put it in local storage as our user's score
+    
 }
                 
 //this function basically checks if the targeted answer of the user is correct or incorrect, and do some stuff after that
@@ -268,17 +254,16 @@ function selectAnswer(event){
     }  
 } 
 
-//setting a variable to the submit score button
-var submitScore = document.getElementById('submitScoreButton');
 
 //adding a click event function to my submit score button
-submitScore.addEventListener('click', function() {
+function submitUserScore() {
 
     //setting variables for the input form for the initials
     var initials = document.getElementById('inputInitials').value.trim();
     //grabbing the 'highScores' from my local storage and covnerting it to a string with JSON.parse
     var highScores = JSON.parse(localStorage.getItem('highScores'));
-
+    
+    
     //creating an object to store our individual user scores into
     //user key will have a value of the initials placed in the input box by the user
     //timeRemaining doubles as our user's score
@@ -296,53 +281,76 @@ submitScore.addEventListener('click', function() {
     else { //if the local storage array IS empty, then just create it here and put the userScoreObject in it
         highScores = [userScoreObject]
     }
+    
     //now we populate the local storage with a 'stringified' version of that array we just created contaning our user score object
     localStorage.setItem('highScores', JSON.stringify(highScores));
-    //also on clicking this button, we want to be redirected to the high scores page
-    location.href = './highscores.html';
-    //then we run the function that will display the stored scores to the screen
-    displayScores();
     
-})
-
-
+    //also on clicking this button, we want to be redirected to the high scores page
+    location.href = './highscores.html';    
+}
 
 //Function to display the high scores on the High Scores page
 function displayScores() {
 
+    viewHighScores.classList.add('hide');
     //grabbing the 'highScores' from my local storage and covnerting it to a string with JSON.parse
     var highScores = JSON.parse(localStorage.getItem('highScores'));
     //grabbing the ordered list on our high scores page and setting it to a variable
     var scoresList = document.getElementById('highScoresList');
     
-    //if our highScores array has more than one item in it, we want to sort these from highest to lowest. 
     if (highScores.length > 1){
-        //this essentially sorts the topScores array into highest scores to lowest scores...found via Google, so I'm not entirely sure how it works
-        highScores.sort(function(a, b) {
-            return b.score - a.score;
-        })
-        /*  highScores.sort((a, b) => (a.score < b.score) ? 1 : -1); -- I think this also sorts them somehow? */
-    }
+        //this essentially sorts the highScores array into highest scores to lowest scores...I'm not entirely sure how it works lol
+           highScores.sort((a, b) => (a.score < b.score) ? 1 : -1);
+        } 
+    
     //for every item in our highScores array, we want to display that score in a created list item on the high scores page
     for (var i = 0; i < highScores.length; i++) {
-
         //create a list item to be added to the above ordered list
-        var userScores = createElement('li');
+        var userScores = document.createElement('li');
         //make the text of that list item equal to the initials and the corresponding score, e.g. <li>"SZ - 70"</li>
         userScores.textContent = highScores[i].user + " - " + highScores[i].score;
+       
         //add this list item into the ordered list on our highscores page
-        scoresList.appendChild(userScores)
+        scoresList.appendChild(userScores);
     }
 }
 
-
-resetScores.addEventListener('click', function(){
-    localStorage.clear(); //this isn't working and I have no idea why.
+/*I had to make this function because I kept getting 'null' errors for these buttons if they did not exist on the page, preventing me
+from being able to manipulate local storage among other things. So I basically asked, when the page loads, do these buttons
+exist on this page? If they do, then add click functionality to them. */
+function onLoad() {
+    if (submitScore) {
+        //adding click function to 'Submit Score' button if it exists on page. Will run above submitUserScore fxn
+        submitScore.addEventListener('click', submitUserScore)
+    }
+    if (resetScores) {
+        //adding click function to the 'Reset High Scores' button if it exists on page -- will empty the local storage on click
+        resetScores.addEventListener('click', function(){
+            localStorage.clear(); 
+        })
+    }
+    if (restartQuiz) {
+        //adding click function to this restart button that will return the user to the quiz's title page (index.html)
+        restartQuiz.addEventListener('click', function(){
+            location.href='./index.html';
 })
-
-
-//MAJOR NOTE:
-
-/*
-On other html projects with js, setting and resetting local storage works like a charm. However, on this project I can neither add to nor reset
-the local storage. My code seems fine. Even hitting that resetScores button above will do nothing to empty my storage. I am at a loss.*/
+    }
+    if (startQuiz) {
+        //adding click function to the start button - startGame function defined below
+        startQuiz.addEventListener('click', startGame);
+    }
+    if (nextButton) {
+        //adding click function to the next button that adds 1 to the index of the question array, proceeding to the next question
+        //this also declares the nextQuestion function, which is described below
+        nextButton.addEventListener('click', function(){
+            currentQuestionIndex++;
+            nextQuestion();
+})
+    }/*when you click this button on the highscores.html page, it will run the above 'displayScores function, which appends high scores 
+    from local storage into an ordered list and hide the big button. */
+    if (viewHighScores) {
+        viewHighScores.addEventListener('click', displayScores)
+    }
+}
+//call this function right away so that when pages load it checks for those buttons before anyone can click them
+onLoad();
