@@ -29,24 +29,24 @@ https://elderbass.github.io/Code-Quiz/
 https://github.com/ElderBass/Code-Quiz.git
 
 Title Screen:
-![Quiz Title Screen](./Assets\Screenshots\Quiz-Title.png)
+![Quiz Title Screen](./Assets/Screenshots/Quiz-Title.png)
 
 
 Correct Answer:
-![Quiz Correct Answer](./Assets\Screenshots\Quiz-Right.png)
+![Quiz Correct Answer](./Assets/Screenshots/Quiz-Right.png)
 
 
 Incorrect Answer:
-![Quiz Incorrect Answer](./Assets\Screenshots\Quiz-Wrong.png)
+![Quiz Incorrect Answer](./Assets/Screenshots/Quiz-Wrong.png)
 
 
 Game Over Screen:
-![Quiz at Game Over](./Assets\Screenshots\Quiz-Game-Over.png)
+![Quiz at Game Over](./Assets/Screenshots/Quiz-Game-Over.png)
 
 
 High Scores Button:
-![High Scores Page with Button](./Assets\Screenshots\High-Score-Button.png)
+![High Scores Page with Button](./Assets/Screenshots/High-Score-Button.png)
 
 
 High Scores Listed:
-![High Scores Page with Scores Listed](Assets\Screenshots\Quiz-Listed-Scores.png)
+![High Scores Page with Scores Listed](Assets/Screenshots/Quiz-Listed-Scores.png)
