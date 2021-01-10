@@ -134,7 +134,7 @@ function startGame (e){
         if (timeRemaining <= 0 || stopTimer ) { 
 
             //timeRemaining = 0;
-            
+            timer.textContent = 'Time: 0';
             questionContainerElement.classList.add('hide'); //we'll hide the div containing the questions to make room for the Game Over screen
             nextButton.classList.add('hide'); //hide the next button
             gameOverScreen.classList.remove('hide'); //un-hide the Game Over screen
@@ -152,7 +152,7 @@ function startGame (e){
             //if stopTimer is still false, that means we still had questions left when we ran out of time, so our score will be zero
             if (!stopTimer ){ 
                 scoreDisplay.textContent = 'Your Score: 0';
-                //timeRemaining = 0;
+                
             }
         }
     }, 1000);
