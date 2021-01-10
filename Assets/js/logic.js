@@ -84,6 +84,11 @@ var gameOverScreen = document.getElementById('gameOverScreen');
 //grabbing the 'form' element that houses our initials input and submit button - this is hidden initially but revealed when needed
 var scoresForm = document.getElementById('scoresForm');
 
+//grabbing the reset high scores button on the high scores page
+var resetScores = document.getElementById('resetHighScores');
+//setting a variable for the 'restart quiz' button that's displayed on the high scores page
+var restartQuiz = document.getElementById("restartQuiz")
+
 //declaring a global variable that will end up being whatever score the user gets on the quiz
 var userScore;
 
@@ -105,11 +110,10 @@ nextButton.addEventListener('click', function(){
     nextQuestion();
 })
 
-//setting a variable for the 'restart quiz' button that's displayed on the high scores screen
-var restartQuiz = document.getElementById("restartQuiz")
+
 //adding click function to this restart button that will return the user to the quiz's title page (index.html)
 restartQuiz.addEventListener('click', function(){
-    restartQuiz.setAttribute('src', 'index.html');
+    location.href='./index.html';
 })
 //this is used for a fancy trick I'll explain later. setting it to false for now.
 var stopTimer = false;
@@ -137,11 +141,12 @@ function startGame (e){
         timeRemaining--; //decrease timeRemaining, which starts at 30, by 1 every 1000ms
         timer.textContent = "Time: "+timeRemaining; //the timer in the upper right corner will display this text content
 
-        //if timeRemaining reaches 0 OR if that fancy stopTimer is somehow true, which comes into play later, then do all this crap
+        //if timeRemaining reaches/surpasses 0 OR if that fancy stopTimer is somehow true, which comes into play later, then do all this crap
         //the stopTimer will become true if we run out of questions to display, thus signaling the end of the quiz and stopping the timer
-        if (timeRemaining === 0 || stopTimer) { 
+        if (timeRemaining <= 0 || stopTimer ) { 
 
-            userScore = 0; //user's score will be 0. sucks to suck
+            timeRemaining = 0;
+            
             questionContainerElement.classList.add('hide'); //we'll hide the div containing the questions to make room for the Game Over screen
             nextButton.classList.add('hide'); //hide the next button
             gameOverScreen.classList.remove('hide'); //un-hide the Game Over screen
@@ -159,31 +164,14 @@ function startGame (e){
             //if stopTimer is still false, that means we still had questions left when we ran out of time, so our score will be zero
             if (!stopTimer ){ 
                 scoreDisplay.textContent = 'Your Score: 0';
-                userScore = 0;
-                
+                timeRemaining = 0;
             }
-            
-        }
-        //if we somehow go in the negatives, basically just repeat everything from above when the timer reached 0
-        else if (timeRemaining < 0) {
-            
-            questionContainerElement.classList.add('hide');
-            nextButton.classList.add('hide');
-            gameOverScreen.classList.remove('hide');
-            scoresForm.classList.remove('hide');
-            clearInterval(timerId);
-            timer.textContent = 'Time: 0'; //making sure the Time left says 0 and not negative whatever
-
-            var finalScore = document.getElementById('finalScoreContainer');
-            var scoreDisplay = document.createElement('h3');
-            finalScore.appendChild(scoreDisplay);
-            scoreDisplay.textContent = 'Your Score: 0';
-            userScore = 0;
         }
     }, 1000);
+
     //call the next question function
     nextQuestion();
-    return userScore; //not sure if I need to but yeah
+    return timeRemaining; //not sure if I need to but yeah
 }
 
 /*This function hides the next button and the empty buttons that will appear after hitting start.
@@ -223,7 +211,6 @@ function cycleQuestions(q){
         //as explained above, this is now set to true so we can access the game over screen when we run out of questions
         stopTimer = true;
         //set the global variable to the timeRemaining, which is the user's score that they will submit later
-        userScore = timeRemaining;
         
     }
     else { //if we have still have questions remaining...let's grab them!
@@ -251,6 +238,7 @@ function cycleQuestions(q){
         answerButtons.appendChild(button);
         }       
     }
+    return timeRemaining; //so we can grab it later and put it in local storage as our user's score
 }
                 
 //this function basically checks if the targeted answer of the user is correct or incorrect, and do some stuff after that
@@ -276,10 +264,8 @@ function selectAnswer(event){
         timeRemaining -= 5;
         userChoice.textContent ='LOL WRONG';
         userChoice.setAttribute('style', 'background-color: red');
-        nextButton.classList.remove('hide');
-        
-    }
-    
+        nextButton.classList.remove('hide');   
+    }  
 } 
 
 //setting a variable to the submit score button
@@ -294,54 +280,69 @@ submitScore.addEventListener('click', function() {
     var highScores = JSON.parse(localStorage.getItem('highScores'));
 
     //creating an object to store our individual user scores into
+    //user key will have a value of the initials placed in the input box by the user
+    //timeRemaining doubles as our user's score
     var userScoreObject = {
         user: initials,
-        score: userScore
+        score: timeRemaining
     }
     //if the highScores array is not empty, i.e. there are already high scores logged, then...
-    if (highScores !== null) {
+    if (highScores) { 
         //...add the user's initials and score (in object form) into the end of the highScores array
         highScores.push(userScoreObject);
         //creating a new array consisting of the highScores array's data
-        topScores = highScores;
-        //this essentially sorts the topScores array into highest scores to lowest scores...found via Google, so I'm not entirely sure how it works
-        topScores.sort(function(a, b) {
-            return b.score - a.score;
-        })
+        //topScores = highScores;
     }
-    else {
-        highScores.push(userScoreObject)
+    else { //if the local storage array IS empty, then just create it here and put the userScoreObject in it
+        highScores = [userScoreObject]
     }
-
+    //now we populate the local storage with a 'stringified' version of that array we just created contaning our user score object
     localStorage.setItem('highScores', JSON.stringify(highScores));
+    //also on clicking this button, we want to be redirected to the high scores page
     location.href = './highscores.html';
+    //then we run the function that will display the stored scores to the screen
     displayScores();
     
 })
 
+
+
+//Function to display the high scores on the High Scores page
 function displayScores() {
+
+    //grabbing the 'highScores' from my local storage and covnerting it to a string with JSON.parse
+    var highScores = JSON.parse(localStorage.getItem('highScores'));
+    //grabbing the ordered list on our high scores page and setting it to a variable
+    var scoresList = document.getElementById('highScoresList');
+    
+    //if our highScores array has more than one item in it, we want to sort these from highest to lowest. 
+    if (highScores.length > 1){
+        //this essentially sorts the topScores array into highest scores to lowest scores...found via Google, so I'm not entirely sure how it works
+        highScores.sort(function(a, b) {
+            return b.score - a.score;
+        })
+        /*  highScores.sort((a, b) => (a.score < b.score) ? 1 : -1); -- I think this also sorts them somehow? */
+    }
+    //for every item in our highScores array, we want to display that score in a created list item on the high scores page
     for (var i = 0; i < highScores.length; i++) {
-        //grab the ordered list on our highscores.html page where the high scores will go
-        var highScoresList = document.getElementById('highScoresList');
 
         //create a list item to be added to the above ordered list
         var userScores = createElement('li');
-        
         //make the text of that list item equal to the initials and the corresponding score, e.g. <li>"SZ - 70"</li>
         userScores.textContent = highScores[i].user + " - " + highScores[i].score;
         //add this list item into the ordered list on our highscores page
-        highScoresList.appendChild(userScore)
-
+        scoresList.appendChild(userScores)
     }
 }
 
 
-
-var resetScores = document.getElementById('resetHighScores');
-
 resetScores.addEventListener('click', function(){
     localStorage.clear(); //this isn't working and I have no idea why.
-    window.localStorage.clear();
 })
 
 
+//MAJOR NOTE:
+
+/*
+On other html projects with js, setting and resetting local storage works like a charm. However, on this project I can neither add to nor reset
+the local storage. My code seems fine. Even hitting that resetScores button above will do nothing to empty my storage. I am at a loss.*/

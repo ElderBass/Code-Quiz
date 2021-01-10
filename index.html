@@ -8,49 +8,46 @@
 </head>
 
 <body>
-    <header>
+    <header> <!--Header with a link to the highscores page right off the bat-->
         <h1 id="high-score"><a href='highscores.html'>High Scores</a></h1>
+        <!--Timer is preset at 30 but it will be altered via javascript once the quiz is started-->
         <h1 id="timer">Time: 30</h1>
     </header>
-    <!--Let's make quiz about TV shows! Arrested, LOST, Sunny, etc!-->
-    
-
+    <!--Container for the entire quiz. Could have used a card I suppose but this worked just as well-->
     <div class='container' id='quizContainer'>
+        <!--Put my introductory text into its own container so I can hide this container once the quiz starts-->
         <div id='introText' class='container'>
             <h2>Test Your TV Knowledge!</h2>
-            <p>Race the clock to answer questions correctly! An incorreect answer subtracts time from the clock. Shoot for the high score by answering quickly and correctly!</p>
+            <p>Race the clock to answer questions correctly! An incorrect answer subtracts time from the clock. Shoot for the high score by answering quickly and correctly!</p>
         </div>
+        <!--The container where the questions will be displayed. Hidden right away until start button is pressed-->
         <div id='questionContainer' class='hide'>
+            <!--I put the questions into their own id so I can shuffle through my questions array and append them into this div in JS-->
             <div id='questions'>Question</div>
-            <div id='answerButtons' class='buttonList'>
-                <!--Answer Buttons will be appended to this div in javascript-->
+            <!--For the answer buttons, which will be appended to this div in javascript-->
+            <div id='answerButtons' class='buttonList'>   
             </div>
         </div>
+        <!--A container for the Start button and Next button. Next button is hidden initially, but is revealed upon pressing an answer button.
+        Pressing the start button starts the game, and start button will then be hidden-->
         <div class='controls'>
             <button id='startButton' class='start-btn'>Start</button>
             <button id='nextButton' class='next-btn hide'>Next</button>
         </div>
+        <!--This container is our 'Game Over' screen. Hidden intially, it will be revealed when the game ends one way or the other-->
         <div class='container hide' id='gameOverScreen'>
             <h2>Game Over!</h2>
             <div id='finalScoreContainer'>
-                <form action="highscores.html" class='hide' id='scoresForm'> <!--can I instead set this action = setLocalStorage?-->
+                <!--This form has a text input for one's initials, and a submit button to store the user's intials and score to local storage
+                Also, when pressing the submit button, user is redirected to the high scores page-->
+                <form action="highscores.html" class='hide' id='scoresForm'> 
                     <label for='inputInitials'>Enter Initials: </label>
                     <input placeholder='Initials' id='inputInitials' type='text'>
                     <button id='submitScoreButton' type='submit'>Submit Score</button> <!--on click > highscores.html-->
                 </form>
             </div>
-        
-             
         </div>
-        
     </div>
-
-
-
-
-
-
-
     <script src="./Assets\js\logic.js"></script>
 </body>
 </html>

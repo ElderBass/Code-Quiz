@@ -10,18 +10,16 @@
     <header>
         <h2>High Scores</h2>
     </header>
+    <!--This container, in theory, will display the high scores stored in local storage from highest to lowest score-->
     <div class='container' id='highScoresContainer'>
         <div class='container' id='insideHighScores'>
             <ol id='highScoresList'>
-                <li>High Score 1</li>
-                <li>High Score 2</li>
-                <li>High Score 3</li>
-                <li>High Score 4</li>
-                <!--Somehow list the items from storage-->
+                <!--High scores from storage will be appended here.--> 
             </ol>
         </div>
         <div class='container'>
-                        
+                <!--I put these buttons into their own container for formatting issues. Reset High Scores button will clear the 
+                local storage of high scores data while the restart quiz button will take you back to the index.html quiz page-->   
                 <button id='resetHighScores' class='control-button'>Reset High Scores</button>
                 <form action='index.html'>
                     <button id='restartQuiz' class='control-button'>Restart Quiz</button>
@@ -29,7 +27,7 @@
             
         </div>
     </div>
-    
+
 <script src='./Assets\js\logic.js'></script>
 </body>
 
